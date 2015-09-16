@@ -1,0 +1,34 @@
+src/*.exe
+src/amsterdamcoin
+src/amsterdamcoind
+src/test_amsterdamcoin
+.*.swp
+*.*~*
+*.bak
+*.rej
+*.orig
+*.o
+*.patch
+.amsterdamcoin
+
+# Compilation and Qt preprocessor part
+*.qm
+Makefile
+amsterdamcoin-qt
+AmsterdamCoin-Qt.app
+
+# Unit-tests
+Makefile.test
+amsterdamcoin-qt_test
+
+# Resources cpp
+qrc_*.cpp
+
+# Qt creator
+*.pro.user
+
+# Mac specific
+.DS_Store
+build
+
+!src/leveldb*/Makefile
