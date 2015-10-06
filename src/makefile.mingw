@@ -100,7 +100,14 @@ OBJS= \
     obj/bloom.o \
     obj/noui.o \
     obj/leveldb.o \
-    obj/txdb.o
+    obj/txdb.o \
+     Lyra2RE/Lyra2RE.o \
+     Lyra2RE/Lyra2.o \
+     Lyra2RE/Sponge.o \
+     Lyra2RE/blake.o \
+     Lyra2RE/groestl.o \
+     Lyra2RE/keccak.o \
+     Lyra2RE/skein.o
 
 ifdef USE_SSE2
 DEFS += -DUSE_SSE2
@@ -127,6 +134,8 @@ obj/%-sse2.o: %-sse2.cpp
 
 obj/%.o: %.cpp $(HEADERS)
 	$(CXX) -c $(CFLAGS) -o $@ $<
+Lyra2RE/%.o: Lyra2RE%.c $(HEADERS)
+        $(CC) -c $(CFLAGS) -o $@ $<
 
 amsterdamcoind.exe: $(OBJS:obj/%=obj/%)
 	$(CXX) $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
