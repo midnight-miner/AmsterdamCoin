@@ -2220,9 +2220,8 @@ bool CBlock::AcceptBlock(CValidationState &state, CDiskBlockPos *dbp)
 
         // Reject block.nVersion=1 blocks (mainnet >= 710000, testnet >= 400000)
         if (nVersion < 2)
-        {
-			if ((!fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 750, 1000)) ||
-			(fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 51, 100)))
+        {if ((!fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 750, 1000)) ||
+ (fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 51, 100)))
             {
                 return state.Invalid(error("AcceptBlock() : rejected nVersion=1 block"));
             }
@@ -2231,26 +2230,26 @@ bool CBlock::AcceptBlock(CValidationState &state, CDiskBlockPos *dbp)
         if (nVersion == 2)
         {
            if ((!fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 750, 1000)) ||
-			(fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 51, 100)))
+ (fTestNet && CBlockIndex::IsSuperMajority(2, pindexPrev, 51, 100)))
             {
                 CScript expect = CScript() << nHeight;
                 if (vtx[0].vin[0].scriptSig.size() < expect.size() ||
                     !std::equal(expect.begin(), expect.end(), vtx[0].vin[0].scriptSig.begin()))
                     return state.DoS(100, error("AcceptBlock() : block height mismatch in coinbase"));
             }
-		}
-        if (nVersion >= 3)
-		{
-			 if ((!fTestNet && CBlockIndex::IsSuperMajority(3, pindexPrev, 750, 1000)) ||
-			 (fTestNet && CBlockIndex::IsSuperMajority(3, pindexPrev, 51, 100)))
-			 {
-				 CScript expect = CScript() << nHeight;
-				 if (vtx[0].vin[0].scriptSig.size() < expect.size() ||
-				 !std::equal(expect.begin(), expect.end(), vtx[0].vin[0].scriptSig.begin()))
-				 return state.DoS(100, error("AcceptBlock() : block height mismatch in coinbase"));
-			 }
-		}	
-	}
+         if (nVersion >= 3)
+ {
+ if ((!fTestNet && CBlockIndex::IsSuperMajority(3, pindexPrev, 750, 1000)) ||
+ (fTestNet && CBlockIndex::IsSuperMajority(3, pindexPrev, 51, 100)))
+ {
+ CScript expect = CScript() << nHeight;
+ if (vtx[0].vin[0].scriptSig.size() < expect.size() ||
+ !std::equal(expect.begin(), expect.end(), vtx[0].vin[0].scriptSig.begin()))
+ return state.DoS(100, error("AcceptBlock() : block height mismatch in coinbase"));
+}
+        }
+    }
+
     // Write block to history file
     try {
         unsigned int nBlockSize = ::GetSerializeSize(*this, SER_DISK, CLIENT_VERSION);
