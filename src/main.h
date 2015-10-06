@@ -10,6 +10,7 @@
 #include "net.h"
 #include "script.h"
 #include "scrypt.h"
+#include "Lyra2RE/Lyra2RE.h"
 
 #include <list>
 
@@ -1286,7 +1287,8 @@ class CBlockHeader
 {
 public:
     // header
-    static const int CURRENT_VERSION=2;
+    static const int CURRENT_VERSION=3;
+    int LastHeight;
     int nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
@@ -1374,7 +1376,15 @@ public:
     uint256 GetPoWHash() const
     {
         uint256 thash;
-        scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
+        /*scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));*/
+        if(LastHeight+1 >= 139800)
+        {
+          lyra2re_hash(BEGIN(nVersion), BEGIN(thash));
+        }
+        else
+        {
+         scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
+        }
         return thash;
     }
 
