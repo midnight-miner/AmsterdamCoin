@@ -2129,9 +2129,23 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
             return error("CheckBlock() : 15 August maxlocks violation");
     }
 
-    // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(GetPoWHash(), nBits))
-        return state.DoS(50, error("CheckBlock() : proof of work failed"));
+    CBlockIndex* pindexPrev = NULL;
+     int nHeight = 0;
+     if (GetHash() != hashGenesisBlock)
+        { 
+          map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(hashPrevBlock);
+            pindexPrev = (*mi).second;
+          if (mi != mapBlockIndex.end())
+          {
+           if (pindexPrev != NULL && !fDisableWallet)
+              {
+                  nHeight = pindexPrev->nHeight+1;
+                    // Check proof of work matches claimed amount
+                if (fCheckPOW && !CheckProofOfWork(GetPoWHash(nHeight), nBits))
+               return state.DoS(50, error("CheckBlock() : proof of work failed"));
+              }
+           }
+        }
 
     // Check timestamp
     if (GetBlockTime() > GetAdjustedTime() + 2 * 60 * 60)
