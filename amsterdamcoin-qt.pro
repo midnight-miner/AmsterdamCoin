@@ -27,11 +27,12 @@ win32 {
 	BDB_LIB_PATH=D:/deps/db-4.8.30.NC/build_unix
 	OPENSSL_INCLUDE_PATH=D:/deps/openssl-1.0.2d/include
 	OPENSSL_LIB_PATH=D:/deps/openssl-1.0.2d
-	MINIUPNPC_INCLUDE_PATH=D:/deps/
+	MINIUPNPC_INCLUDE_PATH=D:/deps/miniupnpc
 	MINIUPNPC_LIB_PATH=D:/deps/miniupnpc
+	MINIUPNP_STATICLIB=D:/deps/miniupnpc
 	QRENCODE_INCLUDE_PATH=D:/deps/qrencode-3.4.4
 	QRENCODE_LIB_PATH=D:/deps/qrencode-3.4.4/.libs
-}
+} 
 OBJECTS_DIR = build
 MOC_DIR = build
 UI_DIR = build
