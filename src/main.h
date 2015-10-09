@@ -1373,11 +1373,15 @@ public:
         vMerkleTree.clear();
     }
 
-    uint256 GetPoWHash() const
+    uint256 GetPoWHash(int nHeight = NULL) const
     {
+		if (nHeight == NULL)
+				nHeight = LastHeight+1;
+		
         uint256 thash;
-        /*scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));*/
-        if(LastHeight+1 >= 139800)
+		
+		//Algo switch at block 139800		
+        if(nHeight >= 139800)
         {
           lyra2re_hash(BEGIN(nVersion), BEGIN(thash));
         }
