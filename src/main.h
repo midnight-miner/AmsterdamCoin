@@ -1504,7 +1504,7 @@ public:
         }
 
         // Check the header
-        if (!CheckProofOfWork(GetPoWHash(), nBits))
+        if (!CheckProofOfWork(GetPoWHash(LastHeight+1), nBits))
             return error("CBlock::ReadFromDisk() : errors in block header");
 
         return true;
