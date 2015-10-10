@@ -10,7 +10,9 @@ What is AmsterdamCoin?
 ----------------
 
 AmsterdamCoin is a lite version of Bitcoin using scrypt as a proof-of-work algorithm.
-- 50 coins per block
+- 84 million coins
+- Lyra2RE
+- 50 coins block reward
 - 2016 blocks to retarget difficulty
 - 30 seconds block time
 
