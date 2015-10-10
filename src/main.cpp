@@ -4554,21 +4554,11 @@ void FormatHashBuffers(CBlock* pblock, char* pmidstate, char* pdata, char* phash
 
 bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 {
-          CBlockIndex* pindexPrev = NULL;
-     int nHeight = 0;
-     if (pblock->GetHash() != hashGenesisBlock)
-     {
-                map<uint256, CBlockIndex*>::iterator mi = mapBlockIndex.find(pblock->hashPrevBlock);
-                pindexPrev = (*mi).second;
-              nHeight = pindexPrev->nHeight+1;
-      }
+    uint256 hash = pblock->GetPoWHash();
+    uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
 
-             uint256 hash = pblock->GetPoWHash(nHeight);
-      uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
-      printf("Hash found: %s", hash.GetHex().c_str());
-
-      if (hash > hashTarget)
-      return false;
+    if (hash > hashTarget)
+        return false;
 
     //// debug print
     printf("AmsterdamCoinMiner:\n");
