@@ -21,7 +21,7 @@ class CKeyItem;
 class CReserveKey;
 
 class CAddress;
-class CInv;
+class CInv; 
 class CNode;
 
 struct CBlockIndexWorkComparator;
@@ -1503,6 +1503,10 @@ public:
             return error("%s() : deserialize or I/O error", __PRETTY_FUNCTION__);
         }
 
+		//Exclude clash blocks
+		if (LastHeight+1 >= 139800 && LastHeight+1 < 140000)
+			return true;
+		
         // Check the header
         if (!CheckProofOfWork(GetPoWHash(), nBits))
             return error("CBlock::ReadFromDisk() : errors in block header");
