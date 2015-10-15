@@ -1213,8 +1213,6 @@ unsigned int static GetNextWorkRequired_V2(const CBlockIndex* pindexLast, const 
 	return KimotoGravityWell(pindexLast, pblock, BlocksTargetSpacing, PastBlocksMin, PastBlocksMax);
 }
 
-
-
 unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
 	int DiffMode = 1; //LEGACY
@@ -1223,7 +1221,7 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
 			DiffMode = 2; //KGW
 		}
 	} else {
-		if (pindexLast->nHeight+1 >= 160000) { 
+		if (pindexLast->nHeight+1 >= 152000) { 
 			DiffMode = 2; //KGW
 		}
 	} 
