@@ -1131,7 +1131,7 @@ unsigned int ComputeMinWork(unsigned int nBase, int64 nTime)
     return bnResult.GetCompact();
 }
 
-unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
+unsigned int static GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
     unsigned int nProofOfWorkLimit = bnProofOfWorkLimit.GetCompact();
 
@@ -1192,12 +1192,47 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         bnNew = bnProofOfWorkLimit;
 
     /// debug print
-    printf("GetNextWorkRequired RETARGET\n");
+    printf("GetNextWorkRequired RETARGET (LEGACY)\n");
     printf("nTargetTimespan = %"PRI64d"    nActualTimespan = %"PRI64d"\n", nTargetTimespan, nActualTimespan);
     printf("Before: %08x  %s\n", pindexLast->nBits, CBigNum().SetCompact(pindexLast->nBits).getuint256().ToString().c_str());
     printf("After:  %08x  %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
 
     return bnNew.GetCompact();
+}
+
+//KGW
+unsigned int static GetNextWorkRequired_V2(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
+{
+	static const int64 BlocksTargetSpacing = 0.5 * 60; // 30 seconds
+	unsigned int TimeDaySeconds = 60 * 60 * 24;
+	int64 PastSecondsMin = TimeDaySeconds * 0.25;
+	int64 PastSecondsMax = TimeDaySeconds * 7;
+	uint64 PastBlocksMin = PastSecondsMin / BlocksTargetSpacing;
+	uint64 PastBlocksMax = PastSecondsMax / BlocksTargetSpacing;
+        
+	return KimotoGravityWell(pindexLast, pblock, BlocksTargetSpacing, PastBlocksMin, PastBlocksMax);
+}
+
+
+
+unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
+{
+	int DiffMode = 1; //LEGACY
+	if (TestNet()) {
+		if (pindexLast->nHeight+1 >= 1024) { 
+			DiffMode = 2; //KGW
+		}
+	} else {
+		if (pindexLast->nHeight+1 >= 160000) { 
+			DiffMode = 2; //KGW
+		}
+	} 
+	if (DiffMode == 1) {			//LEGACY
+		return GetNextWorkRequired_V1(pindexLast, pblock); 
+	} else if (DiffMode == 2) {		//KGW
+		return GetNextWorkRequired_V2(pindexLast, pblock); 
+	}
+	return GetNextWorkRequired_V2(pindexLast, pblock); //KGW
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
