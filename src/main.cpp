@@ -1201,7 +1201,7 @@ unsigned int static GetNextWorkRequiredV1(const CBlockIndex* pindexLast, const C
 }
 
 //KGW
-unsigned int static GetNextWorkRequired_V2(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
+unsigned int static GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
 	static const int64 BlocksTargetSpacing = 0.5 * 60; // 30 seconds
 	unsigned int TimeDaySeconds = 60 * 60 * 24;
@@ -1226,11 +1226,11 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
 		}
 	} 
 	if (DiffMode == 1) {			//LEGACY
-		return GetNextWorkRequired_V1(pindexLast, pblock); 
+		return GetNextWorkRequiredV1(pindexLast, pblock); 
 	} else if (DiffMode == 2) {		//KGW
-		return GetNextWorkRequired_V2(pindexLast, pblock); 
+		return GetNextWorkRequiredV2(pindexLast, pblock); 
 	}
-	return GetNextWorkRequired_V2(pindexLast, pblock); //KGW
+	return GetNextWorkRequiredV2(pindexLast, pblock); //KGW
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
