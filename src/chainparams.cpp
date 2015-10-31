@@ -56,11 +56,6 @@ public:
         nDefaultPort = 61510;
         nRPCPort = 61511;
         bnProofOfWorkLimit = CBigNum(~uint256(0) >> 16);
-
-		//block.GetHash() == 0000816278600f6b88abbda4f2c25b6376cc5b4556a3496b59c8b76855809598
-		//block.hashMerkleRoot == b86d3a400a5040d9e355b9ffb12cc1188c84fb8ac0da24f10d8323c2b87bf93a
-		//block.nTime = 1445966961 
-		//block.nNonce = 24233 
 		
         const char* pszTimestamp = "Oktober 27, 2015: A great new start for AmsterdamCoin.";
         std::vector<CTxIn> vin;
@@ -76,11 +71,16 @@ public:
         genesis.nVersion = 1;
         genesis.nTime    = 1445966961;
         genesis.nBits    = bnProofOfWorkLimit.GetCompact(); 
-        genesis.nNonce   = 24233;
+        genesis.nNonce   = 156245;
 
         hashGenesisBlock = genesis.GetHash();
+		
+		// genesis.GetHash() == 00005e5044b1a81bef73dd7fc302fe157a3537ed5188401622f17e04efb16f20
+		// genesis.hashMerkleRoot == b86d3a400a5040d9e355b9ffb12cc1188c84fb8ac0da24f10d8323c2b87bf93a
+		// genesis.nTime = 1445966961 
+		// genesis.nNonce = 156245 
 
-        assert(hashGenesisBlock == uint256("0x0000816278600f6b88abbda4f2c25b6376cc5b4556a3496b59c8b76855809598"));
+        assert(hashGenesisBlock == uint256("0x00005e5044b1a81bef73dd7fc302fe157a3537ed5188401622f17e04efb16f20"));
         assert(genesis.hashMerkleRoot == uint256("0xb86d3a400a5040d9e355b9ffb12cc1188c84fb8ac0da24f10d8323c2b87bf93a"));
 
         

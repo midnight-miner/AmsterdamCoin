@@ -294,19 +294,13 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/plugins/mrichtexteditor/mrichtextedit.h \
     src/qt/qvalidatedtextedit.h \
     src/qt/tradingdialog.h \
+	src/sph_types.h \
     src/sph_skein.h \
     src/sph_keccak.h \
     src/sph_jh.h \
     src/sph_groestl.h \
-    src/sph_bmw.h \
-    src/sph_types.h \
-    src/sph_luffa.h \
-    src/sph_cubehash.h \
-    src/sph_echo.h \
-    src/sph_shavite.h \
-    src/sph_simd.h \
-    src/sph_types.h
-
+    src/sph_bmw.h 
+	
 SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiontablemodel.cpp \
     src/qt/addresstablemodel.cpp \
@@ -421,12 +415,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/groestl.c \
     src/jh.c \
     src/keccak.c \
-    src/skein.c \
-    src/luffa.c \
-    src/cubehash.c \
-    src/shavite.c \
-    src/echo.c \
-    src/simd.c
+    src/skein.c 
 
 RESOURCES += \
     src/qt/bitcoin.qrc
