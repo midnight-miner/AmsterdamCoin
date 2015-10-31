@@ -319,7 +319,7 @@ void BitcoinGUI::createActions()
     TradingAction->setProperty("objectName","TradingAction");
     tabGroup->addAction(TradingAction);
 
-    connect(TradingAction, SIGNAL(triggered()), this, SLOT(gotoTradingPage()));
+    //connect(TradingAction, SIGNAL(triggered()), this, SLOT(gotoTradingPage()));
     connect(blockAction, SIGNAL(triggered()), this, SLOT(gotoBlockBrowser()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
@@ -447,7 +447,7 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(masternodeManagerAction);
     toolbar->addAction(messageAction);
     toolbar->addAction(blockAction);
-    toolbar->addAction(TradingAction);
+    // toolbar->addAction(TradingAction);
     netLabel = new QLabel();
 
     QWidget *spacer = makeToolBarSpacer();
