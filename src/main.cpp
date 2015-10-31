@@ -1148,25 +1148,21 @@ static CBigNum GetProofOfStakeLimit(int nHeight)
 // miner's coin base reward
 int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 {
-    int64_t nSubsidy = 300 * COIN;
+    int64_t nSubsidy = 10 * COIN;
 
+	//To support coin swap, !! NO PREMINE !!
+	if (nHeight == 1)
+	{
+		nSubsidy = 15000000;
+	}
+	
     return nSubsidy + nFees;
-
 }
 
 // miner's coin stake reward
 int64_t GetProofOfStakeReward(const CBlockIndex* pindexPrev, int64_t nCoinAge, int64_t nFees)
 {
     int64_t nSubsidy = STATIC_POS_REWARD;
-
-    if(pindexPrev->nHeight <= 15000)
-    {
-        nSubsidy = 300 * COIN;
-    }
-    else if(pindexPrev->nHeight < 57000)
-    {
-        nSubsidy = 15 * COIN;
-    }
 
     return nSubsidy + nFees;
 }
