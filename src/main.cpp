@@ -1193,32 +1193,21 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfS
 
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
 
-    if(pindexBest->nHeight >= HARD_FORK_BLOCK){
-        if (nActualSpacing < 0){
-            nActualSpacing = TARGET_SPACING_FORK;
-        }
-        if(nActualSpacing > TARGET_SPACING_FORK * 10){
-            nActualSpacing = TARGET_SPACING_FORK * 10;
-        }
-    } else if(pindexBest->nHeight < HARD_FORK_BLOCK) {
-        if (nActualSpacing < 0){
-            nActualSpacing = TARGET_SPACING;
-        }
-    }
+
+	if (nActualSpacing < 0){
+		nActualSpacing = TARGET_SPACING;
+	}
+    
 
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
     CBigNum bnNew;
     bnNew.SetCompact(pindexPrev->nBits);
-    if(pindexBest->nHeight >= HARD_FORK_BLOCK){
-        int64_t nInterval = nTargetTimespan / TARGET_SPACING_FORK;
-        bnNew *= ((nInterval - 1) * TARGET_SPACING_FORK + nActualSpacing + nActualSpacing);
-        bnNew /= ((nInterval + 1) * TARGET_SPACING_FORK);
-    } else {
-        int64_t nInterval = nTargetTimespan / TARGET_SPACING;
-        bnNew *= ((nInterval - 1) * TARGET_SPACING + nActualSpacing + nActualSpacing);
-        bnNew /= ((nInterval + 1) * TARGET_SPACING);
-    }
+
+	int64_t nInterval = nTargetTimespan / TARGET_SPACING;
+	bnNew *= ((nInterval - 1) * TARGET_SPACING + nActualSpacing + nActualSpacing);
+	bnNew /= ((nInterval + 1) * TARGET_SPACING);
+    
 
     if (bnNew <= 0 || bnNew > bnTargetLimit)
         bnNew = bnTargetLimit;
@@ -1481,23 +1470,15 @@ bool CTransaction::ConnectInputs(CTxDB& txdb, MapPrevTx inputs, map<uint256, CTx
                 return DoS(100, error("ConnectInputs() : %s prevout.n out of range %d %u %u prev tx %s\n%s", GetHash().ToString(), prevout.n, txPrev.vout.size(), txindex.vSpent.size(), prevout.hash.ToString(), txPrev.ToString()));
 
             // If prev is coinbase or coinstake, check that it's matured
-            if(pindexBest->nHeight >= HARD_FORK_BLOCK){
-                if (txPrev.IsCoinBase() || txPrev.IsCoinStake()) 
-                {
-                    int nSpendDepth;
-                    if (IsConfirmedInNPrevBlocks(txindex, pindexBlock, nCoinbaseMaturity, nSpendDepth)){
-                        return error("ConnectInputs() : tried to spend %s at depth %d", txPrev.IsCoinBase() ? "coinbase" : "coinstake", nSpendDepth);
-                    }
-                }
-            } else {
-                if (txPrev.IsCoinBase() || txPrev.IsCoinStake()){
-                    for (const CBlockIndex* pindex = pindexBlock; pindex && pindexBlock->nHeight - pindex->nHeight < nCoinbaseMaturity; pindex = pindex->pprev){
-                        if (pindex->nBlockPos == txindex.pos.nBlockPos && pindex->nFile == txindex.pos.nFile){
-                            return error("ConnectInputs() : tried to spend %s at depth %d", txPrev.IsCoinBase() ? "coinbase" : "coinstake", pindexBlock->nHeight - pindex->nHeight);
-                        }
-                    }
-                }     
-            }
+
+			if (txPrev.IsCoinBase() || txPrev.IsCoinStake()) 
+			{
+				int nSpendDepth;
+				if (IsConfirmedInNPrevBlocks(txindex, pindexBlock, nCoinbaseMaturity, nSpendDepth)){
+					return error("ConnectInputs() : tried to spend %s at depth %d", txPrev.IsCoinBase() ? "coinbase" : "coinstake", nSpendDepth);
+				}
+			}
+
             // ppcoin: check transaction timestamp
             if (txPrev.nTime > nTime)
                 return DoS(100, error("ConnectInputs() : transaction timestamp earlier than input transaction"));
@@ -2185,11 +2166,9 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, const CBlockIndex* pindexPrev, uint64
             return false;  // Transaction timestamp violation
 
         int nSpendDepth;
-        if(pindexBest->nHeight >= HARD_FORK_BLOCK) {
-            nStakeMinConfirmations = 1440;
-        } else {
-            nStakeMinConfirmations = 1000;
-        }
+        
+		nStakeMinConfirmations = 1440;
+
 
         if (IsConfirmedInNPrevBlocks(txindex, pindexPrev, nStakeMinConfirmations - 1, nSpendDepth))
         {

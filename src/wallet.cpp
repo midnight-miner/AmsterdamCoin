@@ -1538,11 +1538,9 @@ void CWallet::AvailableCoinsForStaking(vector<COutput>& vCoins, unsigned int nSp
             if (nDepth < 1)
                 continue;
 
-            if(pindexBest->nHeight >= HARD_FORK_BLOCK){
-                nStakeMinConfirmations = 1440;
-            } else {
-                nStakeMinConfirmations = 1000;
-            }
+
+            nStakeMinConfirmations = 1440;
+
 
             if (nDepth < nStakeMinConfirmations)
             {
@@ -3358,11 +3356,9 @@ uint64_t CWallet::GetStakeWeight() const
 
     LOCK2(cs_main, cs_wallet);
     int nStakeMinConfirmations = 0;
-    if(pindexBest->nHeight >= HARD_FORK_BLOCK){
-      nStakeMinConfirmations = 1440;
-    } else {
-      nStakeMinConfirmations = 1000;
-    }
+
+    nStakeMinConfirmations = 1440;
+
 
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
     {

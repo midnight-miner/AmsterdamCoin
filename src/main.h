@@ -21,14 +21,13 @@ class CValidationState;
 #define START_MASTERNODE_PAYMENTS_TESTNET 1429456427 
 #define START_MASTERNODE_PAYMENTS 1429456427
 
-static const int64_t DARKSEND_COLLATERAL = (10000*COIN);
+static const int64_t DARKSEND_COLLATERAL = (100000*COIN);
 static const int64_t DARKSEND_FEE = (0.0001*COIN);
-static const int64_t DARKSEND_POOL_MAX = (100000.99*COIN);
+static const int64_t DARKSEND_POOL_MAX = (1000000.99*COIN);
 
 static const int64_t STATIC_POS_REWARD = 1 * COIN; //Constant reward of 1 AMS per COIN i.e. 8% 
-static const int64_t TARGET_SPACING_FORK = 60;
-static const int64_t TARGET_SPACING = 69;
-static const signed int HARD_FORK_BLOCK = 90000;
+static const int64_t TARGET_SPACING = 60;
+
 /*
     At 15 signatures, 1/2 of the masternode network can be owned by
     one party without comprimising the security of InstantX
@@ -86,7 +85,7 @@ static const int64_t MIN_TX_FEE = 100;
 /** Fees smaller than this (in satoshi) are considered zero fee (for relaying) */
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 /** No amount larger than this (in satoshi) is valid */
-static const int64_t MAX_MONEY = 4000000000 * COIN; // 1M PoW coins
+static const int64_t MAX_MONEY = 84000000 * COIN;
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
@@ -94,7 +93,7 @@ static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20
 static const int64_t DRIFT = 600;
 inline int64_t FutureDrift(int64_t nTime) { return nTime + DRIFT; }
 
-inline int64_t GetMNCollateral(int nHeight) { return nHeight>=57000 ? 10000 : 100000; }
+inline int64_t GetMNCollateral(int nHeight) { return 100000; }
 
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
