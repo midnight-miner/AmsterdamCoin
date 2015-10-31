@@ -3,35 +3,31 @@
 <plist version="0.9">
 <dict>
 	<key>CFBundleIconFile</key>
-	<string>amsterdamcoin.icns</string>
+	<string>bitcoin.icns</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
-	<string>$VERSION, Copyright © 2009-$YEAR The Bitcoin developers</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$VERSION</string>
-	<key>CFBundleVersion</key>
-	<string>$VERSION</string>
+	<string>Transfer-Qt</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
-	<string>AmsterdamCoin-Qt</string>
+	<string>Transfer-Qt</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.amsterdamcoin.AmsterdamCoin-Qt</string>
+	<string>co.transfer.Transfer-Qt</string>
         <key>CFBundleURLTypes</key>
         <array>
           <dict>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>CFBundleURLName</key>
-            <string>org.amsterdamcoin.AmsterdamCoinPayment</string>
+            <string>co.transfer.TransferPayment</string>
             <key>CFBundleURLSchemes</key>
             <array>
-              <string>amsterdamcoin</string>
+              <string>transfer</string>
             </array>
           </dict>
         </array>
-	<key>NSHighResolutionCapable</key>
-	<true/>
+        <key>LSAppNapIsDisabled</key>
+          <string>True</string>
 </dict>
 </plist>

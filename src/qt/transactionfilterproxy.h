@@ -1,7 +1,3 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #ifndef TRANSACTIONFILTERPROXY_H
 #define TRANSACTIONFILTERPROXY_H
 
@@ -36,6 +32,9 @@ public:
     /** Set maximum number of rows returned, -1 if unlimited. */
     void setLimit(int limit);
 
+    /** Set whether to show conflicted transactions. */
+    void setShowInactive(bool showInactive);
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
 protected:
@@ -48,6 +47,7 @@ private:
     quint32 typeFilter;
     qint64 minAmount;
     int limitRows;
+    bool showInactive;
 };
 
 #endif // TRANSACTIONFILTERPROXY_H

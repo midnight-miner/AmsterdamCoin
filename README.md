@@ -1,20 +1,19 @@
-AmsterdamCoin integration/staging tree
-================================
 
-http://www.amsterdamcoin.com
+Transfer is a PoS-based cryptocurrency.
 
-Copyright (c) 2009-2015 Bitcoin Developers
-Copyright (c) 2011-2015 AmsterdamCoin Developers
-
-What is AmsterdamCoin?
-----------------
-
-AmsterdamCoin is a lite version of Bitcoin using scrypt as a proof-of-work algorithm.
-- 84 million coins
-- Lyra2RE
-- 50 coins block reward
-- 2016 blocks to retarget difficulty
-- 30 seconds block time
+Transfer uses libsecp256k1,
+			  Boost1.55,
+			  OR Boost1.57,  
+			  Openssl1.01p,
+			  Berkeley DB 4.8,
+			  QT5 to compile
 
 
-For more information please visit http://www.amsterdamcoin.com
+Block Spacing: 60 Seconds
+Stake Minimum Age: 24 Hours
+
+Port: 17170
+RPC Port: 17171
+
+
+

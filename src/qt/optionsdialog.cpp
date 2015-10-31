@@ -1,7 +1,3 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #include "optionsdialog.h"
 #include "ui_optionsdialog.h"
 
@@ -35,22 +31,15 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     ui->proxyPort->setEnabled(false);
     ui->proxyPort->setValidator(new QIntValidator(1, 65535, this));
 
-    ui->socksVersion->setEnabled(false);
-    ui->socksVersion->addItem("5", 5);
-    ui->socksVersion->addItem("4", 4);
-    ui->socksVersion->setCurrentIndex(0);
-
     connect(ui->connectSocks, SIGNAL(toggled(bool)), ui->proxyIp, SLOT(setEnabled(bool)));
     connect(ui->connectSocks, SIGNAL(toggled(bool)), ui->proxyPort, SLOT(setEnabled(bool)));
-    connect(ui->connectSocks, SIGNAL(toggled(bool)), ui->socksVersion, SLOT(setEnabled(bool)));
     connect(ui->connectSocks, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning_Proxy()));
 
     ui->proxyIp->installEventFilter(this);
 
     /* Window elements init */
 #ifdef Q_OS_MAC
-    /* remove Window tab on Mac */
-    ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabWindow));
+    ui->tabWindow->setVisible(false);
 #endif
 
     /* Display elements init */
@@ -129,11 +118,9 @@ void OptionsDialog::setModel(OptionsModel *model)
 void OptionsDialog::setMapper()
 {
     /* Main */
-    mapper->addMapping(ui->bitcoinAtStartup, OptionsModel::StartAtStartup);
-
-    /* Wallet */
     mapper->addMapping(ui->transactionFee, OptionsModel::Fee);
-    mapper->addMapping(ui->spendZeroConfChange, OptionsModel::SpendZeroConfChange);
+    mapper->addMapping(ui->reserveBalance, OptionsModel::ReserveBalance);
+    mapper->addMapping(ui->bitcoinAtStartup, OptionsModel::StartAtStartup);
 
     /* Network */
     mapper->addMapping(ui->mapPortUpnp, OptionsModel::MapPortUPnP);
@@ -141,7 +128,6 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->connectSocks, OptionsModel::ProxyUse);
     mapper->addMapping(ui->proxyIp, OptionsModel::ProxyIP);
     mapper->addMapping(ui->proxyPort, OptionsModel::ProxyPort);
-    mapper->addMapping(ui->socksVersion, OptionsModel::ProxySocksVersion);
 
     /* Window */
 #ifndef Q_OS_MAC
@@ -152,8 +138,9 @@ void OptionsDialog::setMapper()
     /* Display */
     mapper->addMapping(ui->lang, OptionsModel::Language);
     mapper->addMapping(ui->unit, OptionsModel::DisplayUnit);
-    mapper->addMapping(ui->displayAddresses, OptionsModel::DisplayAddresses);
     mapper->addMapping(ui->coinControlFeatures, OptionsModel::CoinControlFeatures);
+    mapper->addMapping(ui->minimizeCoinAge, OptionsModel::MinimizeCoinAge);
+    mapper->addMapping(ui->useBlackTheme, OptionsModel::UseBlackTheme);
 }
 
 void OptionsDialog::enableApplyButton()
@@ -184,33 +171,6 @@ void OptionsDialog::setSaveButtonState(bool fState)
     ui->okButton->setEnabled(fState);
 }
 
-void OptionsDialog::on_resetButton_clicked()
-{
-    if(model)
-    {
-        // confirmation dialog
-        QMessageBox::StandardButton btnRetVal = QMessageBox::question(this, tr("Confirm options reset"),
-            tr("Some settings may require a client restart to take effect.") + "<br><br>" + tr("Do you want to proceed?"),
-            QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
-
-        if(btnRetVal == QMessageBox::Cancel)
-            return;
-
-        disableApplyButton();
-
-        /* disable restart warning messages display */
-        fRestartWarningDisplayed_Lang = fRestartWarningDisplayed_Proxy = true;
-
-        /* reset all options and save the default values (QSettings) */
-        model->Reset();
-        mapper->toFirst();
-        mapper->submit();
-
-        /* re-enable restart warning messages display */
-        fRestartWarningDisplayed_Lang = fRestartWarningDisplayed_Proxy = false;
-    }
-}
-
 void OptionsDialog::on_okButton_clicked()
 {
     mapper->submit();
@@ -232,7 +192,7 @@ void OptionsDialog::showRestartWarning_Proxy()
 {
     if(!fRestartWarningDisplayed_Proxy)
     {
-        QMessageBox::warning(this, tr("Warning"), tr("This setting will take effect after restarting AmsterdamCoin."), QMessageBox::Ok);
+        QMessageBox::warning(this, tr("Warning"), tr("This setting will take effect after restarting Transfer."), QMessageBox::Ok);
         fRestartWarningDisplayed_Proxy = true;
     }
 }
@@ -241,7 +201,7 @@ void OptionsDialog::showRestartWarning_Lang()
 {
     if(!fRestartWarningDisplayed_Lang)
     {
-        QMessageBox::warning(this, tr("Warning"), tr("This setting will take effect after restarting AmsterdamCoin."), QMessageBox::Ok);
+        QMessageBox::warning(this, tr("Warning"), tr("This setting will take effect after restarting Transfer."), QMessageBox::Ok);
         fRestartWarningDisplayed_Lang = true;
     }
 }

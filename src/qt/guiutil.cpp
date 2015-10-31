@@ -1,7 +1,3 @@
-// Copyright (c) 2011-2014 The Bitcoin developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 #include <QApplication>
 
 #include "guiutil.h"
@@ -17,12 +13,8 @@
 #include <QDoubleValidator>
 #include <QFont>
 #include <QLineEdit>
-#if QT_VERSION >= 0x050000
-#include <QUrlQuery>
-#else
 #include <QUrl>
-#endif
-#include <QTextDocument> // for Qt::mightBeRichText
+#include <QTextDocument> // For Qt::escape
 #include <QAbstractItemView>
 #include <QClipboard>
 #include <QFileDialog>
@@ -65,7 +57,11 @@ QString dateTimeStr(qint64 nTime)
 QFont bitcoinAddressFont()
 {
     QFont font("Monospace");
+#if QT_VERSION >= 0x040800
+    font.setStyleHint(QFont::Monospace);
+#else
     font.setStyleHint(QFont::TypeWriter);
+#endif
     return font;
 }
 
@@ -87,20 +83,14 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no bitcoin URI
-    if(!uri.isValid() || uri.scheme() != QString("amsterdamcoin"))
+    // NovaCoin: check prefix
+    if(uri.scheme() != QString("transfer"))
         return false;
 
     SendCoinsRecipient rv;
     rv.address = uri.path();
     rv.amount = 0;
-
-#if QT_VERSION < 0x050000
     QList<QPair<QString, QString> > items = uri.queryItems();
-#else
-    QUrlQuery uriQuery(uri);
-    QList<QPair<QString, QString> > items = uriQuery.queryItems();
-#endif
     for (QList<QPair<QString, QString> >::iterator i = items.begin(); i != items.end(); i++)
     {
         bool fShouldReturnFalse = false;
@@ -139,13 +129,13 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert bitcoin:// to bitcoin:
+    // Convert transfer:// to transfer:
     //
     //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("amsterdamcoin://"))
+    if(uri.startsWith("transfer://"))
     {
-        uri.replace(0, 11, "amsterdamcoin:");
+        uri.replace(0, 12, "transfer:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -153,11 +143,7 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString HtmlEscape(const QString& str, bool fMultiLine)
 {
-#if QT_VERSION < 0x050000
     QString escaped = Qt::escape(str);
-#else
-    QString escaped = str.toHtmlEscaped();
-#endif
     if(fMultiLine)
     {
         escaped = escaped.replace("\n", "<br>\n");
@@ -178,17 +164,9 @@ void copyEntryData(QAbstractItemView *view, int column, int role)
 
     if(!selection.isEmpty())
     {
-        // Copy first item (global clipboard)
-        QApplication::clipboard()->setText(selection.at(0).data(role).toString(), QClipboard::Clipboard);
-        // Copy first item (global mouse selection for e.g. X11 - NOP on Windows)
-        QApplication::clipboard()->setText(selection.at(0).data(role).toString(), QClipboard::Selection);
+        // Copy first item
+        QApplication::clipboard()->setText(selection.at(0).data(role).toString());
     }
-}
-
-void setClipboard(const QString& str)
-{
-    QApplication::clipboard()->setText(str, QClipboard::Clipboard);
-    QApplication::clipboard()->setText(str, QClipboard::Selection);
 }
 
 QString getSaveFileName(QWidget *parent, const QString &caption,
@@ -200,11 +178,7 @@ QString getSaveFileName(QWidget *parent, const QString &caption,
     QString myDir;
     if(dir.isEmpty()) // Default to user documents location
     {
-#if QT_VERSION < 0x050000
         myDir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
-#else
-        myDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-#endif
     }
     else
     {
@@ -243,7 +217,7 @@ QString getSaveFileName(QWidget *parent, const QString &caption,
 
 Qt::ConnectionType blockingGUIThreadConnection()
 {
-    if(QThread::currentThread() != qApp->thread())
+    if(QThread::currentThread() != QCoreApplication::instance()->thread())
     {
         return Qt::BlockingQueuedConnection;
     }
@@ -255,7 +229,7 @@ Qt::ConnectionType blockingGUIThreadConnection()
 
 bool checkPoint(const QPoint &p, const QWidget *w)
 {
-    QWidget *atW = QApplication::widgetAt(w->mapToGlobal(p));
+    QWidget *atW = qApp->widgetAt(w->mapToGlobal(p));
     if (!atW) return false;
     return atW->topLevelWidget() == w;
 }
@@ -290,11 +264,11 @@ bool ToolTipToRichTextFilter::eventFilter(QObject *obj, QEvent *evt)
     {
         QWidget *widget = static_cast<QWidget*>(obj);
         QString tooltip = widget->toolTip();
-        if(tooltip.size() > size_threshold && !tooltip.startsWith("<qt") && !Qt::mightBeRichText(tooltip))
+        if(tooltip.size() > size_threshold && !tooltip.startsWith("<qt>") && !Qt::mightBeRichText(tooltip))
         {
-            // Envelop with <qt></qt> to make sure Qt detects this as rich text
+            // Prefix <qt/> to make sure Qt detects this as rich text
             // Escape the current message as HTML and replace \n by <br>
-            tooltip = "<qt>" + HtmlEscape(tooltip, true) + "</qt>";
+            tooltip = "<qt>" + HtmlEscape(tooltip, true) + "<qt/>";
             widget->setToolTip(tooltip);
             return true;
         }
@@ -305,7 +279,7 @@ bool ToolTipToRichTextFilter::eventFilter(QObject *obj, QEvent *evt)
 #ifdef WIN32
 boost::filesystem::path static StartupShortcutPath()
 {
-    return GetSpecialFolderPath(CSIDL_STARTUP) / "AmsterdamCoin.lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / "Transfer.lnk";
 }
 
 bool GetStartOnSystemStartup()
@@ -323,7 +297,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     {
         CoInitialize(NULL);
 
-        // Get a pointer to the IShellLink interface.
+        // Get a pointer to the ITransferLink interface.
         IShellLink* psl = NULL;
         HRESULT hres = CoCreateInstance(CLSID_ShellLink, NULL,
                                 CLSCTX_INPROC_SERVER, IID_IShellLink,
@@ -344,7 +318,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
             psl->SetShowCmd(SW_SHOWMINNOACTIVE);
             psl->SetArguments(pszArgs);
 
-            // Query IShellLink for the IPersistFile interface for
+            // Query ITransferLink for the IPersistFile interface for
             // saving the shortcut in persistent storage.
             IPersistFile* ppf = NULL;
             hres = psl->QueryInterface(IID_IPersistFile,
@@ -369,7 +343,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     return true;
 }
 
-#elif defined(LINUX)
+#elif defined(Q_OS_LINUX)
 
 // Follow the Desktop Application Autostart Spec:
 //  http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html
@@ -387,7 +361,7 @@ boost::filesystem::path static GetAutostartDir()
 
 boost::filesystem::path static GetAutostartFilePath()
 {
-    return GetAutostartDir() / "amsterdamcoin.desktop";
+    return GetAutostartDir() / "transfer.desktop";
 }
 
 bool GetStartOnSystemStartup()
@@ -428,7 +402,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         // Write a bitcoin.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
-        optionFile << "Name=AmsterdamCoin\n";
+        optionFile << "Name=Transfer\n";
         optionFile << "Exec=" << pszExePath << " -min\n";
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -436,60 +410,10 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     }
     return true;
 }
-
-#elif defined(Q_OS_MAC)
-// based on: https://github.com/Mozketo/LaunchAtLoginController/blob/master/LaunchAtLoginController.m
-
-#include <CoreFoundation/CoreFoundation.h>
-#include <CoreServices/CoreServices.h>
-
-LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
-LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
-{
-    // loop through the list of startup items and try to find the bitcoin app
-    CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(list, NULL);
-    for(int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
-        LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
-        UInt32 resolutionFlags = kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes;
-        CFURLRef currentItemURL = NULL;
-        LSSharedFileListItemResolve(item, resolutionFlags, &currentItemURL, NULL);
-        if(currentItemURL && CFEqual(currentItemURL, findUrl)) {
-            // found
-            CFRelease(currentItemURL);
-            return item;
-        }
-        if(currentItemURL) {
-            CFRelease(currentItemURL);
-        }
-    }
-    return NULL;
-}
-
-bool GetStartOnSystemStartup()
-{
-    CFURLRef bitcoinAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
-    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
-    return !!foundItem; // return boolified object
-}
-
-bool SetStartOnSystemStartup(bool fAutoStart)
-{
-    CFURLRef bitcoinAppUrl = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    LSSharedFileListRef loginItems = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
-    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
-
-    if(fAutoStart && !foundItem) {
-        // add bitcoin app to startup item list
-        LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, bitcoinAppUrl, NULL, NULL);
-    }
-    else if(!fAutoStart && foundItem) {
-        // remove item
-        LSSharedFileListItemRemove(loginItems, foundItem);
-    }
-    return true;
-}
 #else
+
+// TODO: OSX startup stuff; see:
+// https://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPSystemStartup/Articles/CustomLogin.html
 
 bool GetStartOnSystemStartup() { return false; }
 bool SetStartOnSystemStartup(bool fAutoStart) { return false; }
@@ -499,10 +423,10 @@ bool SetStartOnSystemStartup(bool fAutoStart) { return false; }
 HelpMessageBox::HelpMessageBox(QWidget *parent) :
     QMessageBox(parent)
 {
-    header = tr("AmsterdamCoin-Qt") + " " + tr("version") + " " +
+    header = tr("Transfer-Qt") + " " + tr("version") + " " +
         QString::fromStdString(FormatFullVersion()) + "\n\n" +
         tr("Usage:") + "\n" +
-        "  amsterdamcoin-qt [" + tr("command-line options") + "]                     " + "\n";
+        "  transfer-qt [" + tr("command-line options") + "]                     " + "\n";
 
     coreOptions = QString::fromStdString(HelpMessage());
 
@@ -511,7 +435,7 @@ HelpMessageBox::HelpMessageBox(QWidget *parent) :
         "  -min                   " + tr("Start minimized") + "\n" +
         "  -splash                " + tr("Show splash screen on startup (default: 1)") + "\n";
 
-    setWindowTitle(tr("AmsterdamCoin-Qt"));
+    setWindowTitle(tr("Transfer-Qt"));
     setTextFormat(Qt::PlainText);
     // setMinimumWidth is ignored for QMessageBox so put in non-breaking spaces to make it wider.
     setText(header + QString(QChar(0x2003)).repeated(50));
@@ -536,4 +460,38 @@ void HelpMessageBox::showOrPrint()
 #endif
 }
 
+void SetBlackThemeQSS(QApplication& app)
+{
+    app.setStyleSheet("QWidget        { background: rgb(41,44,48); }"
+                      "QFrame         { border: none; }"
+                      "QComboBox      { color: rgb(255,255,255); }"
+                      "QComboBox QAbstractItemView::item { color: rgb(255,255,255); }"
+                      "QPushButton    { background: rgb(226,189,121); color: rgb(21,21,21); }"
+                      "QDoubleSpinBox { background: rgb(63,67,72); color: rgb(255,255,255); border-color: rgb(194,194,194); }"
+                      "QLineEdit      { background: rgb(63,67,72); color: rgb(255,255,255); border-color: rgb(194,194,194); }"
+                      "QTextEdit      { background: rgb(63,67,72); color: rgb(255,255,255); }"
+                      "QPlainTextEdit { background: rgb(63,67,72); color: rgb(255,255,255); }"
+                      "QMenuBar       { background: rgb(41,44,48); color: rgb(110,116,126); }"
+                      "QMenu          { background: rgb(30,32,36); color: rgb(222,222,222); }"
+                      "QMenu::item:selected { background-color: rgb(48,140,198); }"
+                      "QLabel         { color: rgb(120,127,139); }"
+                      "QScrollBar     { color: rgb(255,255,255); }"
+                      "QCheckBox      { color: rgb(120,127,139); }"
+                      "QRadioButton   { color: rgb(120,127,139); }"
+                      "QTabBar::tab   { color: rgb(120,127,139); border: 1px solid rgb(78,79,83); border-bottom: none; padding: 5px; }"
+                      "QTabBar::tab:selected  { background: rgb(41,44,48); }"
+                      "QTabBar::tab:!selected { background: rgb(24,26,30); margin-top: 2px; }"
+                      "QTabWidget::pane { border: 1px solid rgb(78,79,83); }"
+                      "QToolButton    { background: rgb(30,32,36); color: rgb(116,122,134); border: none; border-left-color: rgb(30,32,36); border-left-style: solid; border-left-width: 6px; margin-top: 8px; margin-bottom: 8px; }"
+                      "QToolButton:checked { color: rgb(255,255,255); border: none; border-left-color: rgb(215,173,94); border-left-style: solid; border-left-width: 6px; }"
+                      "QProgressBar   { color: rgb(149,148,148); border-color: rgb(255,255,255); border-width: 3px; border-style: solid; }"
+                      "QProgressBar::chunk { background: rgb(255,255,255); }"
+                      "QTreeView::item { background: rgb(41,44,48); color: rgb(212,213,213); }"
+                      "QTreeView::item:selected { background-color: rgb(48,140,198); }"
+                      "QTableView     { background: rgb(66,71,78); color: rgb(212,213,213); gridline-color: rgb(157,160,165); }"
+                      "QHeaderView::section { background: rgb(29,34,39); color: rgb(255,255,255); }"
+                      "QToolBar       { background: rgb(30,32,36); border: none; }");
+}
+
 } // namespace GUIUtil
+

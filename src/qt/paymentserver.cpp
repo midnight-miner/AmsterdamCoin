@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2009-2012 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,14 +18,12 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QStringList>
-#if QT_VERSION < 0x050000
 #include <QUrl>
-#endif
 
 using namespace boost;
 
 const int BITCOIN_IPC_CONNECT_TIMEOUT = 1000; // milliseconds
-const QString BITCOIN_IPC_PREFIX("amsterdamcoin:");
+const QString BITCOIN_IPC_PREFIX("transfer:");
 
 //
 // Create a name that is unique for:
@@ -34,7 +32,7 @@ const QString BITCOIN_IPC_PREFIX("amsterdamcoin:");
 //
 static QString ipcServerName()
 {
-    QString name("BitcoinQt");
+    QString name("TransferQt");
 
     // Append a simple hash of the datadir
     // Note that GetDataDir(true) returns a different path
@@ -106,7 +104,7 @@ PaymentServer::PaymentServer(QApplication* parent) : QObject(parent), saveURIs(t
     uriServer = new QLocalServer(this);
 
     if (!uriServer->listen(name))
-        qDebug() << tr("Cannot start amsterdamcoin: click-to-pay handler");
+        qDebug() << tr("Cannot start transfer: click-to-pay handler");
     else
         connect(uriServer, SIGNAL(newConnection()), this, SLOT(handleURIConnection()));
 }
@@ -159,4 +157,9 @@ void PaymentServer::handleURIConnection()
         savedPaymentRequests.append(message);
     else
         emit receivedURI(message);
+}
+
+void PaymentServer::setOptionsModel(OptionsModel *optionsModel)
+{
+    this->optionsModel = optionsModel;
 }
