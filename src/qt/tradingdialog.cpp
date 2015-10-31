@@ -35,8 +35,8 @@ tradingDialog::tradingDialog(QWidget *parent) :
 
     ui->BuyCostLabel->setPalette(sample_palette);
     ui->SellCostLabel->setPalette(sample_palette);
-    ui->TXAvailableLabel->setPalette(sample_palette);
-    ui->TXAvailableLabel_2->setPalette(sample_palette);
+    ui->AMSAvailableLabel->setPalette(sample_palette);
+    ui->AMSAvailableLabel_2->setPalette(sample_palette);
     ui->BtcAvailableLbl_2->setPalette(sample_palette);
     //Set tabs to inactive
     ui->TradingTabWidget->setTabEnabled(0,false);
@@ -47,15 +47,15 @@ tradingDialog::tradingDialog(QWidget *parent) :
 
 
     /*OrderBook Table Init*/
-    CreateOrderBookTables(*ui->BidsTable,QStringList() << "TOTAL(BTC)"<< "TX(SIZE)" << "BID(BTC)");
-    CreateOrderBookTables(*ui->AsksTable,QStringList() << "ASK(BTC)"  << "TX(SIZE)" << "TOTAL(BTC)");
+    CreateOrderBookTables(*ui->BidsTable,QStringList() << "TOTAL(BTC)"<< "AMS(SIZE)" << "BID(BTC)");
+    CreateOrderBookTables(*ui->AsksTable,QStringList() << "ASK(BTC)"  << "AMS(SIZE)" << "TOTAL(BTC)");
     /*OrderBook Table Init*/
 
     /*Market History Table Init*/
     ui->MarketHistoryTable->setColumnCount(5);
     ui->MarketHistoryTable->verticalHeader()->setVisible(false);
 
-    ui->MarketHistoryTable->setHorizontalHeaderLabels(QStringList()<<"DATE"<<"BUY/SELL"<<"BID/ASK"<<"TOTAL UNITS(TX)"<<"TOTAL COST(BTC");
+    ui->MarketHistoryTable->setHorizontalHeaderLabels(QStringList()<<"DATE"<<"BUY/SELL"<<"BID/ASK"<<"TOTAL UNITS(AMS)"<<"TOTAL COST(BTC");
     ui->MarketHistoryTable->setRowCount(0);
 
     int Cellwidth =  ui->MarketHistoryTable->width() / 5;
@@ -139,7 +139,7 @@ void tradingDialog::InitTrading()
 }
 
 void tradingDialog::UpdaterFunction(){
-    //TXst get the main exchange info in order to populate qLabels in maindialog. then get data
+    //AMSst get the main exchange info in order to populate qLabels in maindialog. then get data
     //required for the current tab.
 
      int Retval = SetExchangeInfoTextLabels();
@@ -151,18 +151,18 @@ void tradingDialog::UpdaterFunction(){
 
 QString tradingDialog::GetMarketSummary(){
 
-     QString Response = sendRequest("https://bittrex.com/api/v1.1/public/GetMarketSummary?market=btc-TX");
+     QString Response = sendRequest("https://bittrex.com/api/v1.1/public/GetMarketSummary?market=btc-AMS");
      return Response;
 }
 
 QString tradingDialog::GetOrderBook(){
 
-      QString  Response = sendRequest("https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-TX&type=both&depth=50");
+      QString  Response = sendRequest("https://bittrex.com/api/v1.1/public/getorderbook?market=BTC-AMS&type=both&depth=50");
       return Response;
 }
 
 QString tradingDialog::GetMarketHistory(){
-      QString Response = sendRequest("https://bittrex.com/api/v1.1/public/getmarkethistory?market=BTC-TX&count=100");
+      QString Response = sendRequest("https://bittrex.com/api/v1.1/public/getmarkethistory?market=BTC-AMS&count=100");
       return Response;
 }
 
@@ -177,14 +177,14 @@ QString tradingDialog::CancelOrder(QString OrderId){
         return Response;
 }
 
-QString tradingDialog::BuyTX(QString OrderType, double Quantity, double Rate){
+QString tradingDialog::BuyAMS(QString OrderType, double Quantity, double Rate){
 
     QString str = "";
     QString URL = "https://bittrex.com/api/v1.1/market/";
             URL += OrderType;
             URL += "?apikey=";
             URL += this->ApiKey;
-            URL += "&nonce=12345434&market=BTC-TX&quantity=";
+            URL += "&nonce=12345434&market=BTC-AMS&quantity=";
             URL += str.number(Quantity,'i',8);
             URL += "&rate=";
             URL += str.number(Rate,'i',8);
@@ -193,14 +193,14 @@ QString tradingDialog::BuyTX(QString OrderType, double Quantity, double Rate){
     return Response;
 }
 
-QString tradingDialog::SellTX(QString OrderType, double Quantity, double Rate){
+QString tradingDialog::SellAMS(QString OrderType, double Quantity, double Rate){
 
     QString str = "";
     QString URL = "https://bittrex.com/api/v1.1/market/";
             URL += OrderType;
             URL += "?apikey=";
             URL += this->ApiKey;
-            URL += "&nonce=12345434&market=BTC-TX&quantity=";
+            URL += "&nonce=12345434&market=BTC-AMS&quantity=";
             URL += str.number(Quantity,'i',8);
             URL += "&rate=";
             URL += str.number(Rate,'i',8);
@@ -212,7 +212,7 @@ QString tradingDialog::SellTX(QString OrderType, double Quantity, double Rate){
 QString tradingDialog::GetOpenOrders(){
     QString URL = "https://bittrex.com/api/v1.1/market/getopenorders?apikey=";
             URL += this->ApiKey;
-            URL += "&nonce=12345434&market=BTC-TX";
+            URL += "&nonce=12345434&market=BTC-AMS";
 
     QString Response = sendRequest(URL);
     return Response;
@@ -233,7 +233,7 @@ QString tradingDialog::GetDepositAddress(){
 
     QString URL = "https://bittrex.com/api/v1.1/account/getdepositaddress?apikey=";
             URL += this->ApiKey;
-            URL += "&nonce=12345434&currency=TX";
+            URL += "&nonce=12345434&currency=AMS";
 
     QString Response = sendRequest(URL);
     return Response;
@@ -243,7 +243,7 @@ QString tradingDialog::GetAccountHistory(){
 
     QString URL = "https://bittrex.com/api/v1.1/account/getorderhistory?apikey=";
             URL += this->ApiKey;
-            URL += "&nonce=12345434&market=BTC-TX&count=10";
+            URL += "&nonce=12345434&market=BTC-AMS&count=10";
 
     QString Response = sendRequest(URL);
     return Response;
@@ -267,7 +267,7 @@ int tradingDialog::SetExchangeInfoTextLabels(){
 
     ui->Bid->setText("<b>Bid:</b> <span style='font-weight:bold; font-size:14px; color:Green;'>" + str.number(obj["Bid"].toDouble(),'i',8) + "</span> BTC");
 
-    ui->volumet->setText("<b>TX Volume:</b> <span style='font-weight:bold; font-size:14px; color:blue;'>" + str.number(obj["Volume"].toDouble(),'i',8) + "</span> TX");
+    ui->volumet->setText("<b>AMS Volume:</b> <span style='font-weight:bold; font-size:14px; color:blue;'>" + str.number(obj["Volume"].toDouble(),'i',8) + "</span> AMS");
 
     ui->volumebtc->setText("<b>BTC Volume:</b> <span style='font-weight:bold; font-size:14px; color:blue;'>" + str.number(obj["BaseVolume"].toDouble(),'i',8) + "</span> BTC");
 
@@ -448,8 +448,8 @@ void tradingDialog::ParseAndPopulateOrderBookTables(QString OrderBook){
     QJsonArray  BuyArray  = ResultObject.value("buy").toArray();                //get buy/sell object from result object
     QJsonArray  SellArray = ResultObject.value("sell").toArray();               //get buy/sell object from result object
 
-    double TXSupply = 0;
-    double TXDemand = 0;
+    double AMSSupply = 0;
+    double AMSDemand = 0;
     double BtcSupply  = 0;
     double BtcDemand  = 0;
 
@@ -463,7 +463,7 @@ void tradingDialog::ParseAndPopulateOrderBookTables(QString OrderBook){
         double y = obj["Quantity"].toDouble();
         double a = (x * y);
 
-        TXSupply = TXSupply + y;
+        AMSSupply = AMSSupply + y;
         BtcSupply  = BtcSupply  + a;
 
         AskRows = ui->AsksTable->rowCount();
@@ -485,7 +485,7 @@ void tradingDialog::ParseAndPopulateOrderBookTables(QString OrderBook){
         double y = obj["Quantity"].toDouble();
         double a = (x * y);
 
-        TXDemand = TXDemand + y;
+        AMSDemand = AMSDemand + y;
         BtcDemand  = BtcDemand  + a;
 
         BidRows = ui->BidsTable->rowCount();
@@ -496,12 +496,12 @@ void tradingDialog::ParseAndPopulateOrderBookTables(QString OrderBook){
         BuyItteration++;
      }
 
-        ui->TXSupply->setText("<b>Supply:</b> <span style='font-weight:bold; font-size:14px; color:blue'>" + str.number(TXSupply,'i',8) + "</span><b> TX</b>");
+        ui->AMSSupply->setText("<b>Supply:</b> <span style='font-weight:bold; font-size:14px; color:blue'>" + str.number(AMSSupply,'i',8) + "</span><b> AMS</b>");
         ui->BtcSupply->setText("<span style='font-weight:bold; font-size:14px; color:blue'>" + str.number(BtcSupply,'i',8) + "</span><b> BTC</b>");
         ui->AsksCount->setText("<b>Ask's :</b> <span style='font-weight:bold; font-size:14px; color:blue'>" + str.number(ui->AsksTable->rowCount()) + "</span>");
 
 
-        ui->TXDemand->setText("<b>Demand:</b> <span style='font-weight:bold; font-size:14px; color:blue'>" + str.number(TXDemand,'i',8) + "</span><b> TX</b>");
+        ui->AMSDemand->setText("<b>Demand:</b> <span style='font-weight:bold; font-size:14px; color:blue'>" + str.number(AMSDemand,'i',8) + "</span><b> AMS</b>");
         ui->BtcDemand->setText("<span style='font-weight:bold; font-size:14px; color:blue'>" + str.number(BtcDemand,'i',8) + "</span><b> BTC</b>");
         ui->BidsCount->setText("<b>Bid's :</b> <span style='font-weight:bold; font-size:14px; color:blue'>" + str.number(ui->BidsTable->rowCount()) + "</span>");
   obj.empty();
@@ -563,11 +563,11 @@ void tradingDialog::ActionsOnSwitch(int index = -1){
                                    Response = GetMarketSummary();
                                    if(Response.size() > 0 && Response != "Error"){
 
-                                       QString balance = GetBalance("TX");
+                                       QString balance = GetBalance("AMS");
                                        QString str;
                                        QJsonObject ResultObject =  GetResultObjectFromJSONObject(balance);
 
-                                       ui->TXAvailableLabel->setText(str.number(ResultObject["Available"].toDouble(),'i',8));
+                                       ui->AMSAvailableLabel->setText(str.number(ResultObject["Available"].toDouble(),'i',8));
                                      }
 
                 break;
@@ -608,10 +608,10 @@ void tradingDialog::ActionsOnSwitch(int index = -1){
                           DisplayBalance(*ui->BitcoinBalanceLabel,*ui->BitcoinAvailableLabel,*ui->BitcoinPendingLabel, QString::fromUtf8("BTC"),Response);
                          }
 
-                         Response = GetBalance("TX");
+                         Response = GetBalance("AMS");
 
                        if(Response.size() > 0 && Response != "Error"){
-                         DisplayBalance(*ui->TXBalanceLabel,*ui->TXAvailableLabel_2,*ui->TXPendingLabel, QString::fromUtf8("TX"),Response);
+                         DisplayBalance(*ui->AMSBalanceLabel,*ui->AMSAvailableLabel_2,*ui->AMSPendingLabel, QString::fromUtf8("AMS"),Response);
                         }
                 break;
 
@@ -702,7 +702,7 @@ void tradingDialog::CalculateBuyCostLabel(){
 void tradingDialog::CalculateSellCostLabel(){
 
     double price    = ui->SellBidPriceEdit->text().toDouble();
-    double Quantity = ui->UnitsInputTX->text().toDouble();
+    double Quantity = ui->UnitsInputAMS->text().toDouble();
     double cost = ((price * Quantity) - ((price * Quantity / 100) * 0.25));
 
     QString Str = "";
@@ -744,14 +744,14 @@ void tradingDialog::on_GenDepositBTN_clicked()
 
 void tradingDialog::on_Sell_Max_Amount_clicked()
 {
-    //calculate amount of BTC that can be gained from selling TX available balance
-    QString responseA = GetBalance("TX");
+    //calculate amount of BTC that can be gained from selling AMS available balance
+    QString responseA = GetBalance("AMS");
     QString str;
     QJsonObject ResultObject =  GetResultObjectFromJSONObject(responseA);
 
-    double AvailableTX = ResultObject["Available"].toDouble();
+    double AvailableAMS = ResultObject["Available"].toDouble();
 
-    ui->UnitsInputTX->setText(str.number(AvailableTX,'i',8));
+    ui->UnitsInputAMS->setText(str.number(AvailableAMS,'i',8));
 }
 
 void tradingDialog::on_Buy_Max_Amount_clicked()
@@ -892,7 +892,7 @@ void tradingDialog::on_BuyTX_clicked()
 
     QString Msg = "Are you sure you want to buy ";
             Msg += ui->UnitsInput->text();
-            Msg += "TX @ ";
+            Msg += "AMS @ ";
             Msg += ui->BuyBidPriceEdit->text();
             Msg += " BTC Each";
 
@@ -901,7 +901,7 @@ void tradingDialog::on_BuyTX_clicked()
 
             if (reply == QMessageBox::Yes) {
 
-                QString Response =  BuyTX(Order,Quantity,Rate);
+                QString Response =  BuyAMS(Order,Quantity,Rate);
 
                 QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
                 QJsonObject  ResponseObject = jsonResponse.object();                              //get json obj
@@ -919,13 +919,13 @@ void tradingDialog::on_BuyTX_clicked()
                  }
 }
 
-void tradingDialog::on_SellTXBTN_clicked()
+void tradingDialog::on_SellAMSBTN_clicked()
 {
     double Rate;
     double Quantity;
 
     Rate     = ui->SellBidPriceEdit->text().toDouble();
-    Quantity = ui->UnitsInputTX->text().toDouble();
+    Quantity = ui->UnitsInputAMS->text().toDouble();
 
     QString OrderType = ui->SellOrdertypeCombo->currentText();
     QString Order;
@@ -933,8 +933,8 @@ void tradingDialog::on_SellTXBTN_clicked()
     if(OrderType == "Limit"){Order = "selllimit";}else if (OrderType == "Market"){ Order = "sellmarket";}
 
     QString Msg = "Are you sure you want to Sell ";
-            Msg += ui->UnitsInputTX->text();
-            Msg += " TX @ ";
+            Msg += ui->UnitsInputAMS->text();
+            Msg += " AMS @ ";
             Msg += ui->SellBidPriceEdit->text();
             Msg += " BTC Each";
 
@@ -943,7 +943,7 @@ void tradingDialog::on_SellTXBTN_clicked()
 
             if (reply == QMessageBox::Yes) {
 
-            QString Response =  SellTX(Order,Quantity,Rate);
+            QString Response =  SellAMS(Order,Quantity,Rate);
             QJsonDocument jsonResponse = QJsonDocument::fromJson(Response.toUtf8());          //get json from str.
             QJsonObject  ResponseObject = jsonResponse.object();                              //get json obj
 

@@ -44,7 +44,7 @@
     <attribute name="title">
      <string>Buy</string>
     </attribute>
-    <widget class="QPushButton" name="BuyTX">
+    <widget class="QPushButton" name="BuyAMS">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -54,7 +54,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Buy TX</string>
+      <string>Buy AMS</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">
@@ -120,7 +120,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>TX</string>
+      <string>AMS</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -1296,10 +1296,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>TX</string>
+      <string>AMS</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="UnitsInputTX">
+    <widget class="QLineEdit" name="UnitsInputAMS">
      <property name="geometry">
       <rect>
        <x>330</x>
@@ -1333,7 +1333,7 @@
       </font>
      </property>
     </widget>
-    <widget class="QPushButton" name="SellTXBTN">
+    <widget class="QPushButton" name="SellAMSBTN">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -1343,7 +1343,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Sell TX</string>
+      <string>Sell AMS</string>
      </property>
     </widget>
     <widget class="QWidget" name="layoutWidget_3">
@@ -1365,12 +1365,12 @@
          </font>
         </property>
         <property name="text">
-         <string>TX Available:</string>
+         <string>AMS Available:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="TXAvailableLabel">
+       <widget class="QLabel" name="AMSAvailableLabel">
         <property name="palette">
          <palette>
           <active>
@@ -1801,7 +1801,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="labelTX">
+       <widget class="QLabel" name="labelAMS">
         <property name="font">
          <font>
           <weight>75</weight>
@@ -1809,7 +1809,7 @@
          </font>
         </property>
         <property name="text">
-         <string> TX</string>
+         <string> AMS</string>
         </property>
        </widget>
       </item>
@@ -2352,7 +2352,7 @@
       <string>Asks</string>
      </property>
     </widget>
-    <widget class="QLabel" name="TXSupply">
+    <widget class="QLabel" name="AMSSupply">
      <property name="geometry">
       <rect>
        <x>570</x>
@@ -2368,7 +2368,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="TXDemand">
+    <widget class="QLabel" name="AMSDemand">
      <property name="geometry">
       <rect>
        <x>160</x>
@@ -2508,7 +2508,7 @@
       <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
      </property>
     </widget>
-    <widget class="QLabel" name="TXBalanceLabel">
+    <widget class="QLabel" name="AMSBalanceLabel">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -2540,7 +2540,7 @@
       </font>
      </property>
      <property name="text">
-      <string>TX Balance:</string>
+      <string>AMS Balance:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
@@ -2562,7 +2562,7 @@
       <string>BTC Balance:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="TXAvailableLabel_2">
+    <widget class="QLabel" name="AMSAvailableLabel_2">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -2594,7 +2594,7 @@
       </font>
      </property>
      <property name="text">
-      <string>TX Available:</string>
+      <string>AMS Available:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_14">
@@ -2613,10 +2613,10 @@
       </font>
      </property>
      <property name="text">
-      <string>TX Pending:</string>
+      <string>AMS Pending:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="TXPendingLabel">
+    <widget class="QLabel" name="AMSPendingLabel">
      <property name="geometry">
       <rect>
        <x>120</x>
@@ -2718,7 +2718,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Bittrex TX Deposit Address:</string>
+      <string>Bittrex AMS Deposit Address:</string>
      </property>
     </widget>
     <widget class="QPushButton" name="GenDepositBTN">
@@ -2731,7 +2731,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Generate TX Coin Deposit Address</string>
+      <string>Generate AMS Coin Deposit Address</string>
      </property>
     </widget>
     <widget class="QLabel" name="DepositAddressLabel">
@@ -2830,9 +2830,9 @@
     <zorder>label_13</zorder>
     <zorder>label_11</zorder>
     <zorder>BitcoinBalanceLabel</zorder>
-    <zorder>TXBalanceLabel</zorder>
-    <zorder>TXAvailableLabel_2</zorder>
-    <zorder>TXPendingLabel</zorder>
+    <zorder>AMSBalanceLabel</zorder>
+    <zorder>AMSAvailableLabel_2</zorder>
+    <zorder>AMSPendingLabel</zorder>
     <zorder>BitcoinAvailableLabel</zorder>
     <zorder>BitcoinPendingLabel</zorder>
     <zorder>label_33</zorder>
