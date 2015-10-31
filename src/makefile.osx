@@ -115,7 +115,6 @@ OBJS= \
     obj/crypto/sha512.o \
     obj/smessage.o    \
     obj/aes_helper.o \
-	obj/sph_types.o \
     obj/echo.o \
     obj/blake.o\
     obj/bmw.o\
