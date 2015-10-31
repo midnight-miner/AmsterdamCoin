@@ -45,7 +45,7 @@ CBigNum bnProofOfStakeLimit(~uint256(0) >> 20);
 unsigned int nStakeMinAge = 24 * 60 * 60; // 24 hours
 unsigned int nModifierInterval = 2 * 60; // time to elapse before new modifier is computed
 
-int nCoinbaseMaturity = 80;
+int nCoinbaseMaturity = 2;
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 
@@ -1153,7 +1153,7 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 	//To support coin swap, !! NO PREMINE !!
 	if (nHeight == 1)
 	{
-		nSubsidy = 15000000;
+		nSubsidy = 15000000 * COIN;
 	}
 	
     return nSubsidy + nFees;
