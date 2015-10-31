@@ -133,7 +133,7 @@ public:
         genesis.nBits  = 520159231; 
         genesis.nNonce = 35117;
 
-        assert(hashGenesisBlock == uint256("0x9672529bc958a440a8acd061d914120d44c914a06454b82d3e1cd68fe4f1f916"));
+        //assert(hashGenesisBlock == uint256("0x9672529bc958a440a8acd061d914120d44c914a06454b82d3e1cd68fe4f1f916"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
