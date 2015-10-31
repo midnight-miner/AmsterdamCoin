@@ -1156,6 +1156,8 @@ int64_t GetProofOfWorkReward(int nHeight, int64_t nFees)
 		nSubsidy = 15000000 * COIN;
 	}
 	
+	nSubsidy >>= (nHeight / 840000); 
+	
     return nSubsidy + nFees;
 }
 
