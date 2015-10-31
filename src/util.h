@@ -118,7 +118,7 @@ extern bool fMasterNode;
 extern bool fLiteMode;
 extern int nInstantXDepth;
 extern int nDarksendRounds;
-extern int nAnonymizeTransferAmount;
+extern int nAnonymizeAmsterdamCoinAmount;
 extern int nLiquidityProvider;
 extern bool fEnableDarksend;
 extern int64_t enforceMasternodePaymentsTime;
@@ -574,7 +574,7 @@ inline uint32_t ByteReverse(uint32_t value)
 //    threadGroup.create_thread(boost::bind(&LoopForever<boost::function<void()> >, "nothing", f, milliseconds));
 template <typename Callable> void LoopForever(const char* name,  Callable func, int64_t msecs)
 {
-    std::string s = strprintf("transfer-%s", name);
+    std::string s = strprintf("amsterdamcoin-%s", name);
     RenameThread(s.c_str());
     LogPrintf("%s thread start\n", name);
     try
@@ -600,7 +600,7 @@ template <typename Callable> void LoopForever(const char* name,  Callable func, 
 // .. and a wrapper that just calls func once
 template <typename Callable> void TraceThread(const char* name,  Callable func)
 {
-    std::string s = strprintf("transfer-%s", name);
+    std::string s = strprintf("amsterdamcoin-%s", name);
     RenameThread(s.c_str());
     try
     {

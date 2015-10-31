@@ -76,7 +76,7 @@ map<uint256, set<uint256> > mapOrphanTransactionsByPrev;
 // Constant stuff for coinbase transactions we create:
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "Transfer Signed Message:\n";
+const string strMessageMagic = "AmsterdamCoin Signed Message:\n";
 
 std::set<uint256> setValidatedTx;
 
@@ -3069,7 +3069,7 @@ struct CImportingNow
 
 void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
 {
-    RenameThread("transfer-loadblk");
+    RenameThread("amsterdamcoin-loadblk");
 
     CImportingNow imp;
 

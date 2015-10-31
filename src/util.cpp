@@ -75,7 +75,7 @@ string strMasterNodeAddr = "";
 bool fLiteMode = false;
 int nInstantXDepth = 1;
 int nDarksendRounds = 2;
-int nAnonymizeTransferAmount = 500;
+int nAnonymizeAmsterdamCoinAmount = 500;
 int nLiquidityProvider = 0;
 /** Spork enforcement enabled time */
 int64_t enforceMasternodePaymentsTime = 4085657524;
@@ -1048,7 +1048,7 @@ static std::string FormatException(std::exception* pex, const char* pszThread)
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "transfer";
+    const char* pszModule = "amsterdamcoin";
 #endif
     if (pex)
         return strprintf(
@@ -1078,10 +1078,10 @@ void PrintExceptionContinue(std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\Transfer
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\Transfer
-    // Mac: ~/Library/Application Support/Transfer
-    // Unix: ~/.transfer
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\AmsterdamCoin
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\AmsterdamCoin
+    // Mac: ~/Library/Application Support/AmsterdamCoin
+    // Unix: ~/.amsterdamcoin
 #ifdef WIN32
     // Windows
     return GetSpecialFolderPath(CSIDL_APPDATA) / "AmsterdamCoin2";

@@ -933,7 +933,7 @@ public:
 
 
 
-/** Internal transfers.
+/** Internal amsterdamcoins.
  * Database key is acentry<account><counter>.
  */
 class CAccountingEntry

@@ -50,12 +50,12 @@ bool AppInit(int argc, char* argv[])
         if (mapArgs.count("-?") || mapArgs.count("--help"))
         {
             // First part of help message is specific to bitcoind / RPC client
-            std::string strUsage = _("Transfer version") + " " + FormatFullVersion() + "\n\n" +
+            std::string strUsage = _("AmsterdamCoin version") + " " + FormatFullVersion() + "\n\n" +
                 _("Usage:") + "\n" +
-                  "  transferd [options]                     " + "\n" +
-                  "  transferd [options] <command> [params]  " + _("Send command to -server or transferd") + "\n" +
-                  "  transferd [options] help                " + _("List commands") + "\n" +
-                  "  transferd [options] help <command>      " + _("Get help for a command") + "\n";
+                  "  amsterdamcoind [options]                     " + "\n" +
+                  "  amsterdamcoind [options] <command> [params]  " + _("Send command to -server or amsterdamcoind") + "\n" +
+                  "  amsterdamcoind [options] help                " + _("List commands") + "\n" +
+                  "  amsterdamcoind [options] help <command>      " + _("Get help for a command") + "\n";
 
             strUsage += "\n" + HelpMessage();
 
@@ -65,7 +65,7 @@ bool AppInit(int argc, char* argv[])
 
         // Command-line RPC
         for (int i = 1; i < argc; i++)
-            if (!IsSwitchChar(argv[i][0]) && !boost::algorithm::istarts_with(argv[i], "transfer:"))
+            if (!IsSwitchChar(argv[i][0]) && !boost::algorithm::istarts_with(argv[i], "amsterdamcoin:"))
                 fCommandLine = true;
 
         if (fCommandLine)

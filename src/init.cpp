@@ -97,7 +97,7 @@ void Shutdown()
     TRY_LOCK(cs_Shutdown, lockShutdown);
     if (!lockShutdown) return;
 
-    RenameThread("transfer-shutoff");
+    RenameThread("amsterdamcoin-shutoff");
     mempool.AddTransactionsUpdated(1);
     StopRPCThreads();
     SecureMsgShutdown();
@@ -170,8 +170,8 @@ std::string HelpMessage()
 {
     string strUsage = _("Options:") + "\n";
     strUsage += "  -?                     " + _("This help message") + "\n";
-    strUsage += "  -conf=<file>           " + _("Specify configuration file (default: transfer.conf)") + "\n";
-    strUsage += "  -pid=<file>            " + _("Specify pid file (default: transferd.pid)") + "\n";
+    strUsage += "  -conf=<file>           " + _("Specify configuration file (default: amsterdamcoin.conf)") + "\n";
+    strUsage += "  -pid=<file>            " + _("Specify pid file (default: amsterdamcoind.pid)") + "\n";
     strUsage += "  -datadir=<dir>         " + _("Specify data directory") + "\n";
     strUsage += "  -wallet=<dir>          " + _("Specify wallet file (within data directory)") + "\n";
     strUsage += "  -dbcache=<n>           " + _("Set database cache size in megabytes (default: 25)") + "\n";
@@ -277,7 +277,7 @@ strUsage += "\n" + _("Masternode options:") + "\n";
     strUsage += "\n" + _("Darksend options:") + "\n";
     strUsage += "  -enabledarksend=<n>          " + _("Enable use of automated darksend for funds stored in this wallet (0-1, default: 0)") + "\n";
     strUsage += "  -darksendrounds=<n>          " + _("Use N separate masternodes to anonymize funds  (2-8, default: 2)") + "\n";
-    strUsage += "  -anonymizetransferamount=<n> " + _("Keep N Transfer anonymized (default: 0)") + "\n";
+    strUsage += "  -anonymizeamsterdamcoinamount=<n> " + _("Keep N AmsterdamCoin anonymized (default: 0)") + "\n";
     strUsage += "  -liquidityprovider=<n>       " + _("Provide liquidity to Darksend by infrequently mixing coins on a continual basis (0-100, default: 0, 1=very frequent, high fees, 100=very infrequent, low fees)") + "\n";
 
     strUsage += "\n" + _("InstantX options:") + "\n";
@@ -491,7 +491,7 @@ bool AppInit2(boost::thread_group& threadGroup)
 
     // Sanity check
     if (!InitSanityCheck())
-        return InitError(_("Initialization sanity check failed. Transfer is shutting down."));
+        return InitError(_("Initialization sanity check failed. AmsterdamCoin is shutting down."));
 
     std::string strDataDir = GetDataDir().string();
 #ifdef ENABLE_WALLET
@@ -507,12 +507,12 @@ bool AppInit2(boost::thread_group& threadGroup)
     if (file) fclose(file);
     static boost::interprocess::file_lock lock(pathLockFile.string().c_str());
     if (!lock.try_lock())
-        return InitError(strprintf(_("Cannot obtain a lock on data directory %s. Transfer is probably already running."), strDataDir));
+        return InitError(strprintf(_("Cannot obtain a lock on data directory %s. AmsterdamCoin is probably already running."), strDataDir));
 
     if (GetBoolArg("-shrinkdebugfile", !fDebug))
         ShrinkDebugFile();
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    LogPrintf("Transfer version %s (%s)\n", FormatFullVersion(), CLIENT_DATE);
+    LogPrintf("AmsterdamCoin version %s (%s)\n", FormatFullVersion(), CLIENT_DATE);
     LogPrintf("Using OpenSSL version %s\n", SSLeay_version(SSLEAY_VERSION));
     if (!fLogTimestamps)
         LogPrintf("Startup time: %s\n", DateTimeStrFormat("%x %H:%M:%S", GetTime()));
@@ -532,7 +532,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     CMasterNode::minProtoVersion = GetArg("-masternodeminprotocol", MIN_MN_PROTO_VERSION);
 
     if (fDaemon)
-        fprintf(stdout, "Transfer server starting\n");
+        fprintf(stdout, "AmsterdamCoin server starting\n");
 
     int64_t nStart;
 
@@ -771,10 +771,10 @@ bool AppInit2(boost::thread_group& threadGroup)
                 InitWarning(msg);
             }
             else if (nLoadWalletRet == DB_TOO_NEW)
-                strErrors << _("Error loading wallet.dat: Wallet requires newer version of Transfer") << "\n";
+                strErrors << _("Error loading wallet.dat: Wallet requires newer version of AmsterdamCoin") << "\n";
             else if (nLoadWalletRet == DB_NEED_REWRITE)
             {
-                strErrors << _("Wallet needed to be rewritten: restart Transfer to complete") << "\n";
+                strErrors << _("Wallet needed to be rewritten: restart AmsterdamCoin to complete") << "\n";
                 LogPrintf("%s", strErrors.str());
                 return InitError(strErrors.str());
             }
@@ -927,15 +927,15 @@ bool AppInit2(boost::thread_group& threadGroup)
         nDarksendRounds = 99999;
     }
 
-    nAnonymizeTransferAmount = GetArg("-anonymizetransferamount", 0);
-    if(nAnonymizeTransferAmount > 999999) nAnonymizeTransferAmount = 999999;
-    if(nAnonymizeTransferAmount < 2) nAnonymizeTransferAmount = 2;
+    nAnonymizeAmsterdamCoinAmount = GetArg("-anonymizeamsterdamcoinamount", 0);
+    if(nAnonymizeAmsterdamCoinAmount > 999999) nAnonymizeAmsterdamCoinAmount = 999999;
+    if(nAnonymizeAmsterdamCoinAmount < 2) nAnonymizeAmsterdamCoinAmount = 2;
 
     bool fEnableInstantX = GetBoolArg("-enableinstantx", true);
     if(fEnableInstantX){
         nInstantXDepth = GetArg("-instantxdepth", 5);
         if(nInstantXDepth > 60) nInstantXDepth = 60;
-        if(nInstantXDepth < 0) nAnonymizeTransferAmount = 0;
+        if(nInstantXDepth < 0) nAnonymizeAmsterdamCoinAmount = 0;
     } else {
         nInstantXDepth = 0;
     }
@@ -949,7 +949,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     LogPrintf("fLiteMode %d\n", fLiteMode);
     LogPrintf("nInstantXDepth %d\n", nInstantXDepth);
     LogPrintf("Darksend rounds %d\n", nDarksendRounds);
-    LogPrintf("Anonymize Transfer Amount %d\n", nAnonymizeTransferAmount);
+    LogPrintf("Anonymize AmsterdamCoin Amount %d\n", nAnonymizeAmsterdamCoinAmount);
 
     /* Denominations
        A note about convertability. Within Darksend pools, each denomination

@@ -42,7 +42,7 @@ ifneq (${USE_UPNP}, -)
  DEFS += -DSTATICLIB -DUSE_UPNP=$(USE_UPNP)
 endif
 
-LIBS += -l kernel32 -l user32 -l gdi32 -l comdlg32 -l winspool -l winmm -l transfer32 -l comctl32 -l ole32 -l oleaut32 -l uuid -l rpcrt4 -l advapi32 -l ws2_32 -l mswsock -l shlwapi
+LIBS += -l kernel32 -l user32 -l gdi32 -l comdlg32 -l winspool -l winmm -l amsterdamcoin32 -l comctl32 -l ole32 -l oleaut32 -l uuid -l rpcrt4 -l advapi32 -l ws2_32 -l mswsock -l shlwapi
 
 # TODO: make the mingw builds smarter about dependencies, like the linux/osx builds are
 HEADERS = $(wildcard *.h)
@@ -95,7 +95,7 @@ ifeq (${USE_WALLET}, 1)
         obj/walletdb.o
 endif
 
-all: transferd.exe
+all: amsterdamcoind.exe
 
 LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a
 DEFS += $(addprefix -I,$(CURDIR)/leveldb/include)
@@ -114,11 +114,11 @@ obj/scrypt-x86.o: scrypt-x86.S
 obj/scrypt-x86_64.o: scrypt-x86_64.S
 	$(CXX) -c $(xCXXFLAGS) -MMD -o $@ $<
 
-transferd.exe: $(OBJS:obj/%=obj/%)
+amsterdamcoind.exe: $(OBJS:obj/%=obj/%)
 	g++ $(CFLAGS) $(LDFLAGS) -o $@ $(LIBPATHS) $^ $(LIBS)
 
 clean:
-	-del /Q transferd
+	-del /Q amsterdamcoind
 	-del /Q obj\*
 
 FORCE:

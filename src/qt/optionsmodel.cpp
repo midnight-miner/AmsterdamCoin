@@ -51,11 +51,11 @@ void OptionsModel::Init()
     if (!settings.contains("nDarksendRounds"))
         settings.setValue("nDarksendRounds", 2);
 
-    if (!settings.contains("nAnonymizeTransferAmount"))
-        settings.setValue("nAnonymizeTransferAmount", 1000);
+    if (!settings.contains("nAnonymizeAmsterdamCoinAmount"))
+        settings.setValue("nAnonymizeAmsterdamCoinAmount", 1000);
 
     nDarksendRounds = settings.value("nDarksendRounds").toLongLong();
-    nAnonymizeTransferAmount = settings.value("nAnonymizeTransferAmount").toLongLong();
+    nAnonymizeAmsterdamCoinAmount = settings.value("nAnonymizeAmsterdamCoinAmount").toLongLong();
 
     // These are shared with core Bitcoin; we want
     // command-line options to override the GUI settings:
@@ -70,8 +70,8 @@ void OptionsModel::Init()
 
     if (settings.contains("nDarksendRounds"))
         SoftSetArg("-darksendrounds", settings.value("nDarksendRounds").toString().toStdString());
-    if (settings.contains("nAnonymizeTransferAmount"))
-        SoftSetArg("-anonymizetransferamount", settings.value("nAnonymizeTransferAmount").toString().toStdString());
+    if (settings.contains("nAnonymizeAmsterdamCoinAmount"))
+        SoftSetArg("-anonymizeamsterdamcoinamount", settings.value("nAnonymizeAmsterdamCoinAmount").toString().toStdString());
 }
 
 int OptionsModel::rowCount(const QModelIndex & parent) const
@@ -216,10 +216,10 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             settings.setValue("nDarksendRounds", nDarksendRounds);
             emit darksendRoundsChanged(nDarksendRounds);
             break;
-        case anonymizeTransferAmount:
-            nAnonymizeTransferAmount = value.toInt();
-            settings.setValue("nAnonymizeTransferAmount", nAnonymizeTransferAmount);
-            emit anonymizeTransferAmountChanged(nAnonymizeTransferAmount);
+        case anonymizeAmsterdamCoinAmount:
+            nAnonymizeAmsterdamCoinAmount = value.toInt();
+            settings.setValue("nAnonymizeAmsterdamCoinAmount", nAnonymizeAmsterdamCoinAmount);
+            emit anonymizeAmsterdamCoinAmountChanged(nAnonymizeAmsterdamCoinAmount);
             break;
         default:
             break;
