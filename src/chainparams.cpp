@@ -91,8 +91,6 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x88)(0xAD)(0xE4);
 
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
-
-        nPOSStartBlock = 1000;
     }
 
     virtual const CBlock& GenesisBlock() const { return genesis; }

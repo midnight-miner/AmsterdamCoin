@@ -2443,8 +2443,6 @@ bool CBlock::AcceptBlock()
     CBlockIndex* pindexPrev = (*mi).second;
     int nHeight = pindexPrev->nHeight+1;
 
-    if (IsProofOfStake() && nHeight < Params().POSStartBlock())
-        return DoS(100, error("AcceptBlock() : reject proof-of-stake at height <= %d", nHeight));
 
     // Check coinbase timestamp
     if (GetBlockTime() > FutureDrift((int64_t)vtx[0].nTime) && IsProofOfStake())
