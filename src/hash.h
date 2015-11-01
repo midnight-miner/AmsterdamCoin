@@ -10,7 +10,60 @@
 
 #include <openssl/sha.h>
 #include <openssl/ripemd.h>
+
+#include "crypto/ripemd160.h"
+#include "crypto/sha256.h"
+
 #include <vector>
+
+/** A hasher class for AmsterdamCoin's 256-bit hash (double SHA-256). */
+class CHash256 {
+private:
+    CSHA256 sha;
+public:
+    static const size_t OUTPUT_SIZE = CSHA256::OUTPUT_SIZE;
+
+    void Finalize(unsigned char hash[OUTPUT_SIZE]) {
+        unsigned char buf[sha.OUTPUT_SIZE];
+        sha.Finalize(buf);
+        sha.Reset().Write(buf, sha.OUTPUT_SIZE).Finalize(hash);
+    }
+
+    CHash256& Write(const unsigned char *data, size_t len) {
+        sha.Write(data, len);
+        return *this;
+    }
+
+    CHash256& Reset() {
+        sha.Reset();
+        return *this;
+    }
+};
+
+/** A hasher class for AmsterdamCoin's 160-bit hash (SHA-256 + RIPEMD-160). */
+class CHash160 {
+private:
+    CSHA256 sha;
+public:
+    static const size_t OUTPUT_SIZE = CRIPEMD160::OUTPUT_SIZE;
+
+    void Finalize(unsigned char hash[OUTPUT_SIZE]) {
+        unsigned char buf[sha.OUTPUT_SIZE];
+        sha.Finalize(buf);
+        CRIPEMD160().Write(buf, sha.OUTPUT_SIZE).Finalize(hash);
+    }
+
+    CHash160& Write(const unsigned char *data, size_t len) {
+        sha.Write(data, len);
+        return *this;
+    }
+
+    CHash160& Reset() {
+        sha.Reset();
+        return *this;
+    }
+};
+
 
 template<typename T1>
 inline uint256 Hash(const T1 pbegin, const T1 pend)
@@ -121,6 +174,14 @@ inline uint160 Hash160(const std::vector<unsigned char>& vch)
     return Hash160(vch.begin(), vch.end());
 }
 
-unsigned int MurmurHash3(unsigned int nHashSeed, const std::vector<unsigned char>& vDataToHash);
+typedef struct
+{
+    SHA512_CTX ctxInner;
+    SHA512_CTX ctxOuter;
+} HMAC_SHA512_CTX;
+
+int HMAC_SHA512_Init(HMAC_SHA512_CTX *pctx, const void *pkey, size_t len);
+int HMAC_SHA512_Update(HMAC_SHA512_CTX *pctx, const void *pdata, size_t len);
+int HMAC_SHA512_Final(unsigned char *pmd, HMAC_SHA512_CTX *pctx);
 
 #endif

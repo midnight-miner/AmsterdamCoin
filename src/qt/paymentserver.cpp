@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2009-2012 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,9 +18,7 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QStringList>
-#if QT_VERSION < 0x050000
 #include <QUrl>
-#endif
 
 using namespace boost;
 
@@ -34,7 +32,7 @@ const QString BITCOIN_IPC_PREFIX("amsterdamcoin:");
 //
 static QString ipcServerName()
 {
-    QString name("BitcoinQt");
+    QString name("AmsterdamCoinQt");
 
     // Append a simple hash of the datadir
     // Note that GetDataDir(true) returns a different path
@@ -159,4 +157,9 @@ void PaymentServer::handleURIConnection()
         savedPaymentRequests.append(message);
     else
         emit receivedURI(message);
+}
+
+void PaymentServer::setOptionsModel(OptionsModel *optionsModel)
+{
+    this->optionsModel = optionsModel;
 }
