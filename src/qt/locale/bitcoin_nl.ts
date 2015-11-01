@@ -3043,8 +3043,8 @@ for example: alertnotify=echo %%s | mail -s &quot;AmsterdamCoin Alert&quot; admi
         <location line="+2"/>
         <source>Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!</source>
         <translation>
-		</translation>
 			Fout: De transactie vereist minimaal %s transactiekosten vanwege het bedrag, complexiteit of het gebruik van recent ontvangen bedragen!
+		</translation>	
     </message>
     <message>
         <location line="+3"/>
