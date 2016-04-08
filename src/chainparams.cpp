@@ -91,6 +91,8 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x88)(0xAD)(0xE4);
 
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
+		
+		vSeeds.push_back(CDNSSeedData("www.amsterdamblockchain.info", "www.amsterdamblockchain.info"));
     }
 
     virtual const CBlock& GenesisBlock() const { return genesis; }
