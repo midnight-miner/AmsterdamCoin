@@ -681,7 +681,7 @@ Adres: %4
         <location line="-429"/>
         <location line="+6"/>
         <source>%n week(s)</source>
-        <translation><numerusform>%n week</numerusform><numerusform>%1 weken</numerusform></translation>
+        <translation><numerusform>%n week</numerusform><numerusform>%n weken</numerusform></translation>
     </message>
     <message>
         <location line="+0"/>
@@ -735,7 +735,7 @@ Adres: %4
         <location line="+69"/>
         <source>This transaction is over the size limit. You can still send it for a fee of %1, which goes to the nodes that process your transaction and helps to support the network. Do you want to pay the fee?</source>
         <translation>
-			Deze transactie is groter dan het limiet. U kunt deze transactie nog steeds versturen %1 transactiekosten welke naar de nodes gaan die uw transactie verwerken. Wilt u de transactiekosten betalen?
+			Deze transactie is groter dan het limiet. U kunt deze transactie nog steeds versturen %n transactiekosten welke naar de nodes gaan die uw transactie verwerken. Wilt u de transactiekosten betalen?
 		</translation>
     </message>
     <message>
